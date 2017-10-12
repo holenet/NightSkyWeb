@@ -28,5 +28,5 @@ urlpatterns = [
     url(r'^accounts/logout/$', auth_views.logout, name='logout', kwargs={'next_page': 'cloud:post_list'}),
 
     url(r'^cloud/', include('cloud.urls')),
-    url(r'^secretsecretsecret/', include('secret.urls')),
+    url(r'^secret_secret_secret/', include('secret.urls')),
 ]
