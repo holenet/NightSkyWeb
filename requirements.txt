@@ -1,0 +1,8 @@
+Django==1.11.5
+eyeD3==0.8.2
+olefile==0.44
+pathlib==1.0.1
+Pillow==4.3.0
+python-magic==0.4.13
+pytz==2017.2
+six==1.11.0
