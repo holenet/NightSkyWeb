@@ -31,7 +31,7 @@ def log_to_dict(log):
         item.update(dict(image_path=log.image.name))
     return item
 
-
+###
 @login_required
 def log_list(request, date):
     if date is not None:
