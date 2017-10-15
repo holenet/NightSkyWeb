@@ -31,7 +31,7 @@ def log_list(request, date):
     if date is None:
         logs = Log.objects.filter(author=request.user).order_by('-created_at')
     else:
-        logs = Log.objects.filter(author=request.user, datetime__contains=date).order_by('-datetime')
+        logs = Log.objects.filter(author=request.user, created_at__contains=date).order_by('-created_at')
     data = []
     for log in logs:
         item = dict(pk=log.pk, type=log.type, created_at=log.created_at, modified_at=log.modified_at,)
