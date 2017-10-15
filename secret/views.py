@@ -44,11 +44,11 @@ def log_list(request, date):
 
 
 @login_required
-def log_date_count(request):
+def log_date_list(request):
     dates = set()
     for log in Log.objects.all():
         dates.add(log.created_at.date())
-    return JsonResponse(dict(count=len(dates)), safe=False)
+    return JsonResponse(sorted(list(dates)), safe=False)
 
 
 @login_required
