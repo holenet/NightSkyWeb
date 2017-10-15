@@ -44,6 +44,14 @@ def log_list(request, date):
 
 
 @login_required
+def log_date_count(request):
+    dates = set()
+    for log in Log.objects.all():
+        dates.add(log.created_at.date())
+    return JsonResponse(dict(count=len(dates)), safe=False)
+
+
+@login_required
 def log_new_text(request):
     if request.method == 'POST':
         form = TextLogForm(request.POST)

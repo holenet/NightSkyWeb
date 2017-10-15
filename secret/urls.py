@@ -4,6 +4,7 @@ from . import views
 app_name = 'secret'
 urlpatterns = [
     url(r'^log/list/((?P<date>[0-9\-]{8,10})/)?$', views.log_list, name='log_list'),
+    url(r'^log/date/count/$', views.log_date_count, name='log_list'),
     url(r'^log/new/text/$', views.log_new_text, name='log_new_text'),
     url(r'^log/new/image/$', views.log_new_image, name='log_new_image'),
     url(r'^log/edit/text/(?P<log_pk>[0-9]+)/$', views.log_edit_text, name='log_edit_text'),
