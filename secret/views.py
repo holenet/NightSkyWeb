@@ -34,7 +34,7 @@ def log_list(request, date):
         logs = Log.objects.filter(author=request.user, created_at__contains=date).order_by('-created_at')
     data = []
     for log in logs:
-        item = dict(pk=log.pk, type=log.type, created_at=log.created_at, modified_at=log.modified_at,)
+        item = dict(pk=log.pk, type=log.type, created_at=log.created_at, modified_at=log.modified_at, watch_id=log.watch_id)
         if log.type == 'text':
             item.update(dict(text=log.text))
         elif log.type == 'image':
