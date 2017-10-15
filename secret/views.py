@@ -135,25 +135,29 @@ def log_download_image(request, log_pk):
     return response
 
 
+def piece_to_dict(piece):
+    info = dict(
+        pk=piece.pk,
+        title=piece.title,
+        comment=piece.comment,
+        watchs=[dict(start=watch.start, end=watch.end) for watch in piece.watches.all()],
+        counts=piece.get_count_watch(),
+    )
+    started = piece.started_at()
+    if started:
+        info['started_at'] = started
+    ended = piece.ended_at()
+    if ended:
+        info['ended_at'] = ended
+    return info
+
+
 @login_required
 def piece_list(request):
     pieces = Piece.objects.all()
     data = []
     for piece in pieces:
-        info = dict(
-            pk=piece.pk,
-            title=piece.title,
-            comment=piece.comment,
-            watchs=[dict(start=watch.start, end=watch.end) for watch in piece.watches.all()],
-            counts=piece.get_count_watch(),
-        )
-        started = piece.started_at()
-        if started:
-            info['started_at'] = started
-        ended = piece.ended_at()
-        if ended:
-            info['ended_at'] = ended
-        data.append(info)
+        data.append(piece_to_dict(piece))
     return JsonResponse(data, safe=False)
 
 
@@ -165,7 +169,7 @@ def piece_new(request):
             piece = form.save(commit=False)
             piece.author = request.user
             piece.save()
-            return HttpSuccess()
+            return JsonResponse(piece_to_dict(piece))
     else:
         form = PieceForm()
     return render(request, 'secret/standard_edit.html', {'form': form})
