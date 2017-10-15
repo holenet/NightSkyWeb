@@ -16,8 +16,11 @@ from secret.models import Log, Piece, Watch
 
 
 class HttpSuccess(HttpResponse):
-    def __init__(self):
-        super(HttpSuccess, self).__init__('Success')
+    def __init__(self, pk=None):
+        if pk:
+            super(HttpSuccess, self).__init__('Success '+str(pk))
+        else:
+            super(HttpSuccess, self).__init__('Success')
 
 
 def log_to_dict(log):
@@ -115,7 +118,7 @@ def log_delete(request, log_pk):
         except Exception as e:
             print(e)
     log.delete()
-    return HttpSuccess()
+    return HttpSuccess(pk=log_pk)
 
 
 @login_required
