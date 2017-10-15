@@ -8,8 +8,7 @@ urlpatterns = [
     url(r'^log/new/text/$', views.log_new_text, name='log_new_text'),
     url(r'^log/new/image/$', views.log_new_image, name='log_new_image'),
     url(r'^log/edit/text/(?P<log_pk>[0-9]+)/$', views.log_edit_text, name='log_edit_text'),
-    url(r'^log/delete/text/(?P<log_pk>[0-9]+)/$', views.log_delete_text, name='log_delete_text'),
-    url(r'^log/delete/image/(?P<log_pk>[0-9]+)/$', views.log_delete_image, name='log_delete_image'),
+    url(r'^log/delete/(?P<log_pk>[0-9]+)/$', views.log_delete, name='log_delete'),
     url(r'^log/download/image/(?P<log_pk>[0-9]+)/$', views.log_download_image, name='log_download_image'),
 
     url(r'^piece/list/$', views.piece_list, name='piece_list'),

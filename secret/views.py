@@ -103,22 +103,16 @@ def log_edit_text(request, log_pk):
     return render(request, 'secret/standard_edit.html', {'form': form})
 
 
-def log_delete_text(request, log_pk):
+def log_delete(request, log_pk):
     log = get_object_or_404(Log, pk=log_pk, type='text', author=request.user)
     if log.watch:
         log.watch.delete()
-    log.delete()
-    return HttpSuccess()
-
-
-@login_required
-def log_delete_image(request, log_pk):
-    log = get_object_or_404(Log, pk=log_pk, type='image', author=request.user)
-    path = log.image.path
-    try:
-        os.remove(path)
-    except Exception as e:
-        print(e)
+    if log.type == 'image':
+        path = log.image.path
+        try:
+            os.remove(path)
+        except Exception as e:
+            print(e)
     log.delete()
     return HttpSuccess()
 
