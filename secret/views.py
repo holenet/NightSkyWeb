@@ -209,8 +209,12 @@ def piece_delete(request, piece_pk):
 
 
 @login_required
-def watch_list(request):
-    watches = Watch.objects.all()
+def watch_list(request, piece_pk):
+    if piece_pk:
+        piece = get_object_or_404(Piece, pk=piece_pk, author=request.user)
+        watches = piece.watches.order_by('date')
+    else:
+        watches = Watch.objects.filter(author=request.user).order_by('date')
     data = []
     for watch in watches:
         info = dict(

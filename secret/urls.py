@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^piece/comment/edit/(?P<piece_pk>[0-9]+)/$', views.piece_comment_edit, name='piece_comment_edit'),
     url(r'^piece/delete/(?P<piece_pk>[0-9]+)/$', views.piece_delete, name='piece_delete'),
 
-    url(r'^watch/list/$', views.watch_list, name='watch_list'),
+    url(r'^watch/list/((?P<piece_pk>[0-9]+)/)?$', views.watch_list, name='watch_list'),
     url(r'^watch/new/$', views.watch_new, name='watch_new'),
     url(r'^watch/edit/(?P<watch_pk>[0-9]+)/$', views.watch_edit, name='watch_edit'),
     url(r'^watch/delete/(?P<watch_pk>[0-9]+)/$', views.watch_delete, name='watch_delete'),
