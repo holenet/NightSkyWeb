@@ -38,9 +38,9 @@ def log_list(request, date):
             print(ve)
             raise Http404()
     if date is None:
-        logs = Log.objects.filter(author=request.user).order_by('-created_at')
+        logs = Log.objects.filter(author=request.user).order_by('created_at')
     else:
-        logs = Log.objects.filter(author=request.user, created_at__contains=date).order_by('-created_at')
+        logs = Log.objects.filter(author=request.user, created_at__contains=date).order_by('created_at')
     data = []
     for log in logs:
         data.append(log_to_dict(log))
