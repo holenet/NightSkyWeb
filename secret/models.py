@@ -29,7 +29,7 @@ class Log(models.Model):
 class Piece(models.Model):
     author = models.ForeignKey('auth.User')
     title = models.TextField()
-    comment = models.TextField(default='')
+    comment = models.TextField(default='', blank=True)
 
     def __unicode__(self):
         return u'%s' % self.title

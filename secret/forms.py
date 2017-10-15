@@ -17,7 +17,7 @@ class ImageLogForm(forms.ModelForm):
 class PieceForm(forms.ModelForm):
     class Meta:
         model = Piece
-        fields = ('title',)
+        fields = ('title', 'comment')
 
 
 class PieceCommentForm(forms.ModelForm):
