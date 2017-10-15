@@ -20,6 +20,15 @@ class HttpSuccess(HttpResponse):
         super(HttpSuccess, self).__init__('Success')
 
 
+def log_to_dict(log):
+    item = dict(pk=log.pk, type=log.type, created_at=log.created_at, modified_at=log.modified_at, watch_pk=log.watch_id)
+    if log.type == 'text':
+        item.update(dict(text=log.text))
+    elif log.type == 'image':
+        pass
+    return item
+
+
 @login_required
 def log_list(request, date):
     if date is not None:
@@ -34,12 +43,7 @@ def log_list(request, date):
         logs = Log.objects.filter(author=request.user, created_at__contains=date).order_by('-created_at')
     data = []
     for log in logs:
-        item = dict(pk=log.pk, type=log.type, created_at=log.created_at, modified_at=log.modified_at, watch_pk=log.watch_id)
-        if log.type == 'text':
-            item.update(dict(text=log.text))
-        elif log.type == 'image':
-            pass
-        data.append(item)
+        data.append(log_to_dict(log))
     return JsonResponse(data, safe=False)
 
 
@@ -60,7 +64,7 @@ def log_new_text(request):
             text_log.author = request.user
             text_log.type = 'text'
             text_log.save()
-            return HttpSuccess()
+            return JsonResponse(log_to_dict(text_log), safe=False)
     else:
         form = TextLogForm()
     return render(request, 'secret/standard_edit.html', {'form': form})
