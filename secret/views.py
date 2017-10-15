@@ -82,7 +82,7 @@ def log_new_image(request):
             image_log.author = request.user
             image_log.type = 'image'
             image_log.save()
-            return JsonResponse(log_to_dict(image_log), safe=Fasle)
+            return JsonResponse(log_to_dict(image_log), safe=False)
     else:
         form = ImageLogForm()
     return render(request, 'secret/file_upload.html', {'form': form})
