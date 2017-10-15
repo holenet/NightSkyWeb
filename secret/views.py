@@ -103,6 +103,7 @@ def log_edit_text(request, log_pk):
     return render(request, 'secret/standard_edit.html', {'form': form})
 
 
+@login_required
 def log_delete(request, log_pk):
     log = get_object_or_404(Log, pk=log_pk, type='text', author=request.user)
     if log.watch:
