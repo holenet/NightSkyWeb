@@ -28,7 +28,7 @@ def log_to_dict(log):
     if log.type == 'text':
         item.update(dict(text=log.text))
     elif log.type == 'image':
-        pass
+        item.update(dict(image_path=log.image.name))
     return item
 
 
@@ -82,7 +82,7 @@ def log_new_image(request):
             image_log.author = request.user
             image_log.type = 'image'
             image_log.save()
-            return HttpSuccess()
+            return JsonResponse(log_to_dict(image_log), safe=Fasle)
     else:
         form = ImageLogForm()
     return render(request, 'secret/file_upload.html', {'form': form})

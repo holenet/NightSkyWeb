@@ -7,7 +7,7 @@ from django.utils import timezone
 
 
 def image_path(instance, filename):
-    return os.path.join('image', instance.author.username, filename)
+    return os.path.join('secret', 'image', instance.author.username, filename)
 
 
 class Log(models.Model):
@@ -16,7 +16,7 @@ class Log(models.Model):
     author = models.ForeignKey('auth.User')
     type = models.TextField()
     text = models.TextField(null=True)
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True, upload_to=image_path)
     watch = models.ForeignKey('secret.Watch', related_name='logs', on_delete=models.SET_NULL, null=True)
 
     def __unicode__(self):
