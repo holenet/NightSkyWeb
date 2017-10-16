@@ -35,5 +35,5 @@ class WatchEditForm(forms.ModelForm):
         fields = ('start', 'end',)
 
 
-class WatchAddForm(forms.ModelForm):
+class WatchAddForm(forms.Form):
     logs = forms.ModelMultipleChoiceField(queryset=Log.objects.all())
