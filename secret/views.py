@@ -11,7 +11,7 @@ from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils import dateparse
 
-from secret.forms import TextLogForm, ImageLogForm, PieceForm, PieceCommentForm, WatchForm
+from secret.forms import TextLogForm, ImageLogForm, PieceForm, PieceCommentForm, WatchEditForm, WatchAddForm
 from secret.models import Log, Piece, Watch
 
 
@@ -169,7 +169,7 @@ def piece_new(request):
             piece = form.save(commit=False)
             piece.author = request.user
             piece.save()
-            return JsonResponse(piece_to_dict(piece))
+            return JsonResponse(piece_to_dict(piece), safe=False)
     else:
         form = PieceForm()
     return render(request, 'secret/standard_edit.html', {'form': form})
@@ -208,6 +208,18 @@ def piece_delete(request, piece_pk):
     return HttpSuccess()
 
 
+def watch_to_dict(watch):
+    info = dict(
+        pk=watch.pk,
+        piece=str(watch.piece),
+        start=watch.start,
+        end=watch.end,
+        date=watch.date,
+        logs=[dict(pk=log.pk, summary=str(log)) for log in watch.logs.all()],
+    )
+    return info
+
+
 @login_required
 def watch_list(request, piece_pk):
     if piece_pk:
@@ -217,22 +229,14 @@ def watch_list(request, piece_pk):
         watches = Watch.objects.filter(author=request.user).order_by('date')
     data = []
     for watch in watches:
-        info = dict(
-            pk=watch.pk,
-            piece=str(watch.piece),
-            start=watch.start,
-            end=watch.end,
-            date=watch.date,
-            logs=[dict(pk=log.pk, summary=str(log)) for log in watch.logs.all()],
-        )
-        data.append(info)
+        data.append(watch_to_dict(watch))
     return JsonResponse(data, safe=False)
 
 
 @login_required
 def watch_new(request):
     if request.method == 'POST':
-        form = WatchForm(request.POST)
+        form = WatchEditForm(request.POST)
         if form.is_valid():
             watch = form.save(commit=False)
             watch.author = request.user
@@ -241,9 +245,9 @@ def watch_new(request):
             for log in form.cleaned_data['logs']:
                 log.watch = watch
                 log.save()
-            return HttpSuccess()
+            return JsonResponse(watch_to_dict(watch), safe=False)
     else:
-        form = WatchForm()
+        form = WatchEditForm()
     return render(request, 'secret/standard_edit.html', {'form': form})
 
 
@@ -251,11 +255,32 @@ def watch_new(request):
 def watch_edit(request, watch_pk):
     watch = get_object_or_404(Watch, pk=watch_pk, author=request.user)
     if request.method == 'POST':
-        form = WatchForm(request.POST, instance=watch)
+        form = WatchEditForm(request.POST, instance=watch)
         if form.is_valid():
-            form.save()
+            watch = form.save(commit=False)
+            watch.piece = form.cleaned_data['piece']
+            watch.save()
+            for log in form.cleaned_data['logs']:
+                log.watch = watch
+                log.save()
+            return JsonResponse(watch_to_dict(watch), safe=False)
     else:
-        form = WatchForm(instance=watch)
+        form = WatchEditForm(instance=watch)
+    return render(request, 'secret/standard_edit.html', {'form': form})
+
+
+@login_required
+def watch_add_logs(request, watch_pk):
+    watch = get_object_or_404(Watch, pk=watch_pk, author=request.user)
+    if request.method == 'POST':
+        form = WatchAddForm(request.POST)
+        if form.is_valid():
+            for log in form.cleaned_data['logs']:
+                log.watch = watch
+                log.save()
+            return JsonResponse(watch_to_dict(watch), safe=False)
+    else:
+        form = WatchAddForm()
     return render(request, 'secret/standard_edit.html', {'form': form})
 
 

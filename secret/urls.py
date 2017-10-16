@@ -20,5 +20,6 @@ urlpatterns = [
     url(r'^watch/list/((?P<piece_pk>[0-9]+)/)?$', views.watch_list, name='watch_list'),
     url(r'^watch/new/$', views.watch_new, name='watch_new'),
     url(r'^watch/edit/(?P<watch_pk>[0-9]+)/$', views.watch_edit, name='watch_edit'),
+    url(r'^watch/add/logs/(?P<watch_pk>[0-9]+)/$', views.watch_add_logs, name='watch_add_logs'),
     url(r'^watch/delete/(?P<watch_pk>[0-9]+)/$', views.watch_delete, name='watch_delete'),
 ]

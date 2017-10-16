@@ -26,10 +26,14 @@ class PieceCommentForm(forms.ModelForm):
         fields = ('comment',)
 
 
-class WatchForm(forms.ModelForm):
+class WatchEditForm(forms.ModelForm):
     piece = forms.ModelChoiceField(queryset=Piece.objects.all())
     logs = forms.ModelMultipleChoiceField(queryset=Log.objects.all())
 
     class Meta:
         model = Watch
         fields = ('start', 'end',)
+
+
+class WatchAddForm(forms.ModelForm):
+    logs = forms.ModelMultipleChoiceField(queryset=Log.objects.all())
