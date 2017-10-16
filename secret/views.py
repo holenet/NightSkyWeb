@@ -31,7 +31,7 @@ def log_to_dict(log):
         item.update(dict(image_path=log.image.name))
     return item
 
-###
+
 @login_required
 def log_list(request, date):
     if date is not None:
@@ -211,7 +211,7 @@ def piece_delete(request, piece_pk):
 def watch_to_dict(watch):
     info = dict(
         pk=watch.pk,
-        piece=str(watch.piece),
+        piece_pk=watch.piece_id,
         start=watch.start,
         end=watch.end,
         date=watch.date,
