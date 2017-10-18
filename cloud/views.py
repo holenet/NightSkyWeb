@@ -167,8 +167,7 @@ def folder_delete(request, folder_id, recc=None):
 @login_required
 def file_list(request, path):
     parent = get_folder_or_404(user=request.user, path=path)
-    user_files = UserFile.objects.filter(author=request.user, parent=parent).order_by('-uploaded_at')\
-        .order_by('-user_folder')
+    user_files = UserFile.objects.filter(author=request.user, parent=parent).order_by('uploaded_at').order_by('-user_folder')
     if 'JSON' in request.GET:
         data = []
         for user_file in user_files:
