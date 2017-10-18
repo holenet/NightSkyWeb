@@ -7,7 +7,7 @@ from django.utils import timezone
 
 
 def image_path(instance, filename):
-    return os.path.join('secret', 'image', instance.author.username, filename)
+    return os.path.join('NightSky', 'secret', 'image', instance.author.username, filename)
 
 
 class Log(models.Model):
