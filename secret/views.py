@@ -108,7 +108,7 @@ def log_edit_text(request, log_pk):
 
 @login_required
 def log_delete(request, log_pk):
-    log = get_object_or_404(Log, pk=log_pk, type='text', author=request.user)
+    log = get_object_or_404(Log, pk=log_pk, author=request.user)
     if log.watch:
         log.watch.delete()
     if log.type == 'image':
