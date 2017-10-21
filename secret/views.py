@@ -252,6 +252,8 @@ def watch_new(request):
             watch = form.save(commit=False)
             watch.author = request.user
             watch.piece = form.cleaned_data['piece']
+            if watch.etc=='':
+                watch.etc = None
             watch.save()
             for log in form.cleaned_data['logs']:
                 log.watch = watch
@@ -270,6 +272,8 @@ def watch_edit(request, watch_pk):
         if form.is_valid():
             watch = form.save(commit=False)
             watch.piece = form.cleaned_data['piece']
+            if watch.etc=='':
+                watch.etc = None
             watch.save()
             for log in form.cleaned_data['logs']:
                 log.watch = watch
