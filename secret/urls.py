@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^log/edit/text/(?P<log_pk>[0-9]+)/$', views.log_edit_text, name='log_edit_text'),
     url(r'^log/delete/(?P<log_pk>[0-9]+)/$', views.log_delete, name='log_delete'),
     url(r'^log/download/image/(?P<log_pk>[0-9]+)/$', views.log_download_image, name='log_download_image'),
+    url(r'^log/cut/watch/(?P<log_pk>[0-9]+)/$', views.log_cut_watch, name='log_cut_watch'),
 
     url(r'^piece/list/$', views.piece_list, name='piece_list'),
     url(r'^piece/new/$', views.piece_new, name='piece_new'),

@@ -135,6 +135,14 @@ def log_download_image(request, log_pk):
     return response
 
 
+@login_required
+def log_cut_watch(request, log_pk):
+    log = get_object_or_404(Log, pk=log_pk, author=request.user)
+    log.watch = None
+    log.save()
+    return JsonResponse(log_to_dict(log), safe=False)
+
+
 def piece_to_dict(piece):
     info = dict(
         pk=piece.pk,
