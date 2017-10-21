@@ -47,6 +47,8 @@ class Piece(models.Model):
     def get_count_watch(self):
         count = []
         for watch in self.watches.order_by('-end'):
+            if watch.etc is not None:
+                continue
             s = watch.start
             e = watch.end
             if len(count)<e:
@@ -59,9 +61,13 @@ class Piece(models.Model):
 class Watch(models.Model):
     author = models.ForeignKey('auth.User')
     piece = models.ForeignKey('secret.Piece', related_name='watches', on_delete=models.SET_NULL, null=True)
-    start = models.PositiveSmallIntegerField()
-    end = models.PositiveSmallIntegerField()
+    start = models.PositiveSmallIntegerField(null=True, blank=True)
+    end = models.PositiveSmallIntegerField(null=True, blank=True)
+    etc = models.TextField(null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)
 
     def __unicode__(self):
-        return u'%s [%d-%d]' % (self.piece, self.start, self.end)
+        if self.start==self.end:
+            return u'%s [%d]' % (self.piece, self.start)
+        else:
+            return u'%s [%d-%d]' % (self.piece, self.start, self.end)

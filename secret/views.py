@@ -9,7 +9,7 @@ from wsgiref.util import FileWrapper
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django.utils import dateparse
+from django.utils import dateparse, timezone
 
 from secret.forms import TextLogForm, ImageLogForm, PieceForm, PieceCommentForm, WatchEditForm, WatchAddForm
 from secret.models import Log, Piece, Watch
@@ -140,7 +140,7 @@ def piece_to_dict(piece):
         pk=piece.pk,
         title=piece.title,
         comment=piece.comment,
-        watchs=[dict(start=watch.start, end=watch.end) for watch in piece.watches.all()],
+        watchs=[dict(start=watch.start, end=watch.end) if watch.etc is None else dict(etc=watch.etc) for watch in piece.watches.all()],
         counts=piece.get_count_watch(),
     )
     started = piece.started_at()
@@ -154,7 +154,8 @@ def piece_to_dict(piece):
 
 @login_required
 def piece_list(request):
-    pieces = Piece.objects.all()
+    pieces = Piece.objects.filter(author=request.user)
+    pieces = sorted(pieces, key=lambda x: x.started_at() if x.started_at() else timezone.now(), reverse=True)
     data = []
     for piece in pieces:
         data.append(piece_to_dict(piece))
@@ -212,11 +213,13 @@ def watch_to_dict(watch):
     info = dict(
         pk=watch.pk,
         piece_pk=watch.piece_id,
-        start=watch.start,
-        end=watch.end,
         date=watch.date,
         logs=[dict(pk=log.pk, summary=str(log)) for log in watch.logs.all()],
     )
+    if watch.etc is None:
+        info.update(dict(start=watch.start, end=watch.end))
+    else:
+        info.update(etc=watch.etc)
     return info
 
 
@@ -226,7 +229,7 @@ def watch_list(request, piece_pk):
         piece = get_object_or_404(Piece, pk=piece_pk, author=request.user)
         watches = piece.watches.order_by('date')
     else:
-        watches = Watch.objects.filter(author=request.user).order_by('date')
+        watches = Watch.objects.filter(author=request.user).order_by('-date')
     data = []
     for watch in watches:
         data.append(watch_to_dict(watch))

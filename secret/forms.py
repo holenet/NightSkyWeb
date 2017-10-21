@@ -32,7 +32,7 @@ class WatchEditForm(forms.ModelForm):
 
     class Meta:
         model = Watch
-        fields = ('start', 'end',)
+        fields = ('start', 'end', 'etc')
 
 
 class WatchAddForm(forms.Form):
