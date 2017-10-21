@@ -67,7 +67,9 @@ class Watch(models.Model):
     date = models.DateTimeField(default=timezone.now)
 
     def __unicode__(self):
-        if self.start==self.end:
+        if self.etc is not None:
+            return u'%s [%s]' % (self.piece, self.etc)
+        elif self.start==self.end:
             return u'%s [%d]' % (self.piece, self.start)
         else:
             return u'%s [%d-%d]' % (self.piece, self.start, self.end)
