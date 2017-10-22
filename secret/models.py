@@ -6,6 +6,10 @@ from django.db import models
 from django.utils import timezone
 
 
+def weekday_to_str(wd):
+    return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][wd]
+
+
 def image_path(instance, filename):
     return os.path.join('NightSky', 'secret', 'image', instance.author.username, filename)
 
@@ -24,6 +28,9 @@ class Log(models.Model):
 
     def notify_modified(self):
         self.modified_at = timezone.now()
+
+    def created_at_with_weekday(self):
+        return u'%s [%s]' % (self.created_at.date(), weekday_to_str(self.created_at.weekday()))
 
 
 class Piece(models.Model):
