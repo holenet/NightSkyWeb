@@ -17,7 +17,7 @@ class Log(models.Model):
     type = models.TextField()
     text = models.TextField(null=True)
     image = models.ImageField(null=True, upload_to=image_path)
-    watch = models.ForeignKey('secret.Watch', related_name='logs', on_delete=models.SET_NULL, null=True)
+    watch = models.ForeignKey('secret.Watch', related_name='logs', on_delete=models.DO_NOTHING, null=True)
 
     def __unicode__(self):
         return u'%d [%s] -%s' % (self.id, self.type, self.created_at)
