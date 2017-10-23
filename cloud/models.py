@@ -28,6 +28,9 @@ class Comment(models.Model):
 
 
 def user_file_path(instance, filename):
+    arr = filename.split('.')
+    if len(arr)>1:
+        instance.type = arr[-1]
     return os.path.join('NightSky', instance.author.username, instance.path())
 
 

@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+    <h2><a href="{% url 'cloud:file_list' path='' %}">Browse Files</a></h2>
 	<h2 name="count">Count: {{ posts.count }}</h2>
 	{% for post in posts %}
 		<div class="post">
