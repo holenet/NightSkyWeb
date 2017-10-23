@@ -50,8 +50,10 @@ h1, h2, h3, h4 {
     margin-bottom: 50px;
 }
 
-.post h1 a, .post h1 a:visited {
+.post_title {
     color: #000000;
+    font-size: 30pt;
+    font-family: 'Lobster', cursive;
 }
 
 .comment {

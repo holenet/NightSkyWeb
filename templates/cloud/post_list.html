@@ -9,10 +9,10 @@
 	<h2 name="count">Count: {{ posts.count }}</h2>
 	{% for post in posts %}
 		<div class="post">
-			<div class="date">
-				{{ post.published_date }}
-			</div>
-			<h1><a href="{% url 'cloud:post_detail' post_id=post.pk %}">{{ post.title }}</a></h1>
+			<a class="post_title" href="{% url 'cloud:post_detail' post_id=post.pk %}">{{ post.title }}</a>
+			<span class="date">
+				{{ post.published_date }}<br>{{ post.author }}
+            </span>
 			<p>{{ post.text|linebreaksbr }}</p>
 			Comments: {{ post.comments.count }}
 		</div>
