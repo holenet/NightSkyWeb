@@ -104,7 +104,7 @@ def add_comment_to_post(request, post_id):
 
 @login_required
 def comment_delete(request, comment_id):
-    comment = get_object_or_404(Comment, pk=comment_id)
+    comment = get_object_or_404(Comment, pk=comment_id, author=request.user)
     comment.delete()
     return redirect('cloud:post_detail', post_id=comment.post.pk)
 
