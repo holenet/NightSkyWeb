@@ -1,5 +1,8 @@
+import os
+from django.conf import settings
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.forms import UserCreationForm
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 
 
@@ -21,3 +24,10 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
+
+
+def course(request):
+    if request.user.username != 'holenet':
+        raise Http404()
+    image_data = open(settings.STATIC_ROOT+os.path.sep+'check_course.png', "rb").read()
+    return HttpResponse(image_data, content_type="image/png")
