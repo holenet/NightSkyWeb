@@ -26,8 +26,15 @@ def register(request):
     return render(request, 'registration/register.html', {'form': form})
 
 
-def course(request):
+def course_check(request):
     if request.user.username != 'holenet':
         raise Http404()
     image_data = open(settings.STATIC_ROOT+os.path.sep+'check_course.png', "rb").read()
     return HttpResponse(image_data, content_type="image/png")
+
+
+def course_time(request):
+    if request.user.username != 'holenet':
+        raise Http404()
+    time = open(settings.STATIC_ROOT+os.path.sep+'check_time.txt', "r")
+    return time.readline()
