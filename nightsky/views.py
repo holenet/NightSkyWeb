@@ -37,4 +37,4 @@ def course_time(request):
     if request.user.username != 'holenet':
         raise Http404()
     time = open(settings.STATIC_ROOT+os.path.sep+'check_time.txt', "r")
-    return time.readline()
+    return HttpResponse(time.readline())
