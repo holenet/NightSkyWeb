@@ -19,9 +19,12 @@
 {#    <script type="text/javascript" src="{% static 'judge/refresh.js' %}"></script>#}
     <script>
     // setTimeout("location.reload()", 100);
-        var counter = 0;
-        window.setInterval("refreshDiv()", 1000);
-        function refreshDiv() {
+//        var counter = 0;
+    var finished = false;
+    window.setInterval("refreshDiv()", 1000);
+    function refreshDiv() {
+        if(finished)
+            return;
 {#            counter += 1;#}
 {#            document.getElementById("status").innerHTML = "refresh "+counter;#}
 {#            $.ajax({#}
@@ -49,15 +52,18 @@
 {#                }#}
 {#            );#}
 
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-              document.getElementById("status").innerHTML =
-              this.responseText;
+                var text = this.responseText;
+                document.getElementById("status").innerHTML = this.responseText;
+                if(text.includes('Correct') || text.includes('Wrong') || text.includes('Error')) {
+                    finished = true;
+                }
             }
-            };
-            xhttp.open("GET", "{% url 'judge:submission_status_ajax' submission_pk=submission.pk %}", true);
-            xhttp.send();
-        }
+        };
+        xhttp.open("GET", "{% url 'judge:submission_status_ajax' submission_pk=submission.pk %}", true);
+        xhttp.send();
+    }
     </script>
 {% endblock %}
