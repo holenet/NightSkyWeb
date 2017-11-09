@@ -174,7 +174,7 @@ def submission_status(request, submission_pk):
     print(status)
     submission.save()
     context = dict(problem_pk=submission.problem.pk, submission=submission)
-    if 'Wrong' in status:
+    if 'Wrong' in status or 'Error' in status:
         context['wrong'] = re.findall(r'\((.*):', status)[0]
     return render(request, 'judge/submission_status.html', context)
 

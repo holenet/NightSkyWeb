@@ -2,6 +2,8 @@ import os
 import sys
 from time import time
 
+from subprocess import Popen
+
 
 def make_result(jar, pk, testcase, tc, an, rs):
     try:
@@ -10,7 +12,15 @@ def make_result(jar, pk, testcase, tc, an, rs):
         for index in testcases:
             print('Test Case #{}'.format(index))
             start = time()
-            os.system('java -jar {} < {}/input{}.txt > {}/answer{}.txt'.format(jar, tc, index, an, index))
+            # os.system('java -jar {} < {}/input{}.txt > {}/answer{}.txt'.format(jar, tc, index, an, index))
+            sts = Popen('java -jar {} < {}/input{}.txt > {}/answer{}.txt'.format(jar, tc, index, an, index), shell=True).wait()
+            if sts!=0:
+                print('return code error: '+str(sts))
+                result = open('{}/{}.txt'.format(rs, pk), 'w')
+                result.write('Runtime Error ({}:{})'.format(index, count))
+                result.close()
+                exit()
+                break
             end = time()
             print('Running Time: {:.2f}sec'.format(end-start))
             fcor = open('{}/output{}.txt'.format(tc, index), 'r')
