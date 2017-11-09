@@ -20,27 +20,44 @@
     <script>
     // setTimeout("location.reload()", 100);
         var counter = 0;
-        window.setInterval("refreshDiv()", 100);
+        window.setInterval("refreshDiv()", 1000);
         function refreshDiv() {
 {#            counter += 1;#}
 {#            document.getElementById("status").innerHTML = "refresh "+counter;#}
-            $.ajax({
-                url: '{% url "judge:submission_status_ajax" submission_pk=submission.pk %}',
-                // url: '/judge/submission/status/6/ajax/',
-                type: 'get',
-                dataType: 'json',
-                success: function(result) {
-                    counter += 1;
-                    if (result) {
-                        document.getElementById("status").innerHTML = result.status + counter;
-                    } else {
-                        document.getElementById("status").innerHTML = "Error";
-                    }
-                },
-                error: function (error) {
-                    document.getElementById("status").innerHTML = "ErrorError"+counter;
-                }
-            });
+{#            $.ajax({#}
+{#                url: '{% url "judge:submission_status_ajax" submission_pk=submission.pk %}',#}
+{#                // url: '/judge/submission/status/6/ajax/',#}
+{#                type: 'get',#}
+{#                dataType: 'json',#}
+{#                success: function(result) {#}
+{#                    counter += 1;#}
+{#                    if (result) {#}
+{#                        document.getElementById("status").innerHTML = result.status + counter;#}
+{#                    } else {#}
+{#                        document.getElementById("status").innerHTML = "ErrorErrorrrr";#}
+{#                    }#}
+{#                },#}
+{#                error: function (error) {#}
+{#                    document.getElementById("status").innerHTML = "ErrorError"+counter;#}
+{#                }#}
+{#            });#}
+
+{#            $.get('{% url "judge:submission_status_ajax" submission_pk=submission.pk %}',#}
+{#                {}, function(data){#}
+{#                    counter += 1;#}
+{#                    document.getElementById("status").innerHTML = result.status + counter;#}
+{#                }#}
+{#            );#}
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              document.getElementById("status").innerHTML =
+              this.responseText;
+            }
+            };
+            xhttp.open("GET", "{% url 'judge:submission_status_ajax' submission_pk=submission.pk %}", true);
+            xhttp.send();
         }
     </script>
 {% endblock %}

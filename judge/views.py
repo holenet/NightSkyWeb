@@ -175,7 +175,6 @@ def submission_status(request, submission_pk):
 
 
 def submission_status_ajax(request, submission_pk):
-    print('ajax', submission_pk)
     submission = get_object_or_404(Submission, pk=submission_pk)
     try:
         result = open(JUDGE_ROOT+'/result/{}.txt'.format(submission.pk), 'r')
@@ -184,5 +183,4 @@ def submission_status_ajax(request, submission_pk):
     except Exception as e:
         print(e)
         status = 'Prepare'
-    data = {'status': status}
-    return JsonResponse(data, safe=False)
+    return HttpResponse(status)
