@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 import mimetypes
-import threading
 
 import re
 
@@ -13,13 +12,12 @@ from wsgiref.util import FileWrapper
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.conf import settings
 
-from judge import check
 from judge.forms import SubmitForm, ProblemForm
 from judge.models import Problem, Submission
-from nightsky.settings import MEDIA_ROOT
 
-JUDGE_ROOT = os.path.join(MEDIA_ROOT, 'Judge')
+JUDGE_ROOT = os.path.join(settings.MEDIA_ROOT, 'Judge')
 
 
 @login_required
@@ -133,6 +131,7 @@ def submit(request, problem_pk):
             submission.author = request.user
             submission.problem = problem
             submission.save()
+
             tc = JUDGE_ROOT+'/testcase/{}'.format(problem.pk)
             an = JUDGE_ROOT+'/answer/{}'.format(submission.pk)
             rs = JUDGE_ROOT+'/result'
@@ -140,20 +139,15 @@ def submit(request, problem_pk):
                 os.makedirs(an)
             if not os.path.exists(rs):
                 os.makedirs(rs)
-            t = threading.Thread(target=check.make_result, name='check{}'.format(submission.pk),
-                                 args=(submission.code_file.path,
-                                       submission.pk, problem.testcase,
-                                       tc, an, rs,
-                                       )
-                                 )
-            t.daemon = True
-            t.start()
-            # check.check(submission.code_file.path, submission.pk,
-            #     problem.pk,
-            #     JUDGE_ROOT+'/testcase/{}'.format(problem.pk),
-            #     JUDGE_ROOT+'/answer/{}'.format(submission.pk),
-            #     JUDGE_ROOT+'/result/{}'.format(submission.pk),
-            # )
+            os.system('python3 {root}/check.py {jar} {pk} {testcase} {tc} {an} {rs} &'
+                    .format(root=os.path.join(settings.BASE_DIR, 'judge'),
+                            jar=submission.code_file.path,
+                            pk=submission.pk,
+                            testcase=problem.testcase,
+                            tc=tc, an=an, rs=rs,
+                    )
+            )
+
             return redirect('judge:submission_status', submission_pk=submission.pk)
     else:
         form = SubmitForm()
@@ -175,12 +169,13 @@ def submission_status(request, submission_pk):
     submission.save()
     context = dict(problem_pk=submission.problem.pk, submission=submission)
     if 'Wrong' in status or 'Error' in status:
-        context['wrong'] = re.findall(r'\((.*):', status)[0]
+        if len(re.findall(r'\((.*):', status))>0:
+            context['wrong'] = re.findall(r'\((.*):', status)[0]
     return render(request, 'judge/submission_status.html', context)
 
 
 def submission_status_ajax(request, submission_pk):
-    print 'ajax', submission_pk
+    print('ajax', submission_pk)
     submission = get_object_or_404(Submission, pk=submission_pk)
     try:
         result = open(JUDGE_ROOT+'/result/{}.txt'.format(submission.pk), 'r')
