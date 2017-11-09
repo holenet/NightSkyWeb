@@ -1,0 +1,12 @@
+{% extends 'cloud/base.html' %}
+
+{% block content %}
+    <h1>Problem</h1>
+    <h4>{{ problem.title }}</h4>
+    <h2>Test Case List</h2>
+    {% for index in indices %}
+        <a href="{% url 'judge:testcase_detail' problem_pk=problem.pk testcase_index=index %}">
+        	<p>Test Case {{ index }}</p>
+        </a>
+    {% endfor %}
+{% endblock %}

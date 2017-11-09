@@ -1,0 +1,25 @@
+{% extends 'cloud/base.html' %}
+
+{% block content %}
+    <h1>Problem</h1>
+    <h4>{{ problem.title }}</h4>
+	<h2>Test Case {{ testcase_index }}</h2>
+    <div style="float:left; width:50%; padding: 20px;">
+        <span style="float: right">
+            <a href="{% url 'judge:testcase_download' problem_pk=problem.pk file_name=input_file %}">
+                Download input text file
+            </a>
+        </span>
+        <h4>Input</h4>
+        {{ input|linebreaksbr }}
+    </div>
+    <div style="float:left; width:50%; padding: 20px;">
+        <span style="float: right">
+            <a href="{% url 'judge:testcase_download' problem_pk=problem.pk file_name=output_file %}">
+                Download output text file
+            </a>
+        </span>
+        <h4>Output</h4>
+        {{ output|linebreaksbr }}
+    </div>
+{% endblock %}

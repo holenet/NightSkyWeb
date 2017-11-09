@@ -1,0 +1,12 @@
+{% extends 'cloud/base.html' %}
+
+{% block content %}
+	<h2>Submit</h2>
+    <h5>{{ problem.title }}</h5>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+{#    <input name="user_file" required="" id="id_user_file" type="file">#}
+{% endblock %}

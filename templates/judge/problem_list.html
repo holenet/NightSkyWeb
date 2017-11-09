@@ -1,0 +1,12 @@
+{% extends 'cloud/base.html' %}
+
+{% block content %}
+	<h2>Problems</h2>
+    {% for problem in problems %}
+        <div class="problem">
+        <h4 class="problem_title">{{ problem.title }}</h4>
+        <a class="btn btn-default" href="{% url 'judge:testcase_list' problem_pk=problem.pk %}">Test Case ({{ problem.testcase }})</a>
+        <a class="btn btn-default" href="{% url 'judge:submit' problem_pk=problem.pk %}">Submit</a>
+        </div>
+    {% endfor %}
+{% endblock %}

@@ -29,6 +29,7 @@ urlpatterns = [
 
     url(r'^cloud/', include('cloud.urls')),
     url(r'^secret/secret/secret/', include('secret.urls')),
+    url(r'^judge/', include('judge.urls')),
 
     url(r'^course/check/', views.course_check, name='course_check'),
     url(r'^course/time/', views.course_time, name='course_time'),

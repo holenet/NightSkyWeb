@@ -1,0 +1,46 @@
+{% extends 'cloud/base.html' %}
+
+{% block content %}
+	<h2>Submission {{ submission.pk }}</h2>
+    <div id="status">
+    {% if wrong %}
+        <a href="{% url 'judge:testcase_detail' problem_pk=problem_pk testcase_index=wrong %}">
+            {{ submission.status }}
+        </a>
+    {% else %}
+        <p>{{ submission.status }}</p>
+    {% endif %}
+    </div>
+{% endblock %}
+
+{% load staticfiles %}
+
+{% block scripts %}
+{#    <script type="text/javascript" src="{% static 'judge/refresh.js' %}"></script>#}
+    <script>
+    // setTimeout("location.reload()", 100);
+        var counter = 0;
+        window.setInterval("refreshDiv()", 100);
+        function refreshDiv() {
+{#            counter += 1;#}
+{#            document.getElementById("status").innerHTML = "refresh "+counter;#}
+            $.ajax({
+                url: '{% url "judge:submission_status_ajax" submission_pk=submission.pk %}',
+                // url: '/judge/submission/status/6/ajax/',
+                type: 'get',
+                dataType: 'json',
+                success: function(result) {
+                    counter += 1;
+                    if (result) {
+                        document.getElementById("status").innerHTML = result.status + counter;
+                    } else {
+                        document.getElementById("status").innerHTML = "Error";
+                    }
+                },
+                error: function (error) {
+                    document.getElementById("status").innerHTML = "ErrorError"+counter;
+                }
+            });
+        }
+    </script>
+{% endblock %}
