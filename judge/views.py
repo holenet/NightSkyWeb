@@ -156,7 +156,7 @@ def submit(request, problem_pk):
 
 @login_required
 def submission_status(request, submission_pk):
-    submission = get_object_or_404(Submission, pk=submission_pk)
+    submission = get_object_or_404(Submission, pk=submission_pk, author=request.user)
     try:
         result = open(JUDGE_ROOT+'/result/{}.txt'.format(submission.pk), 'r')
         status = result.readline()

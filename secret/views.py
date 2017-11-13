@@ -53,7 +53,7 @@ def log_list(request, date):
 @login_required
 def log_date_list(request):
     dates = set()
-    for log in Log.objects.all():
+    for log in Log.objects.filter(author=request.user):
         dates.add(log.created_at_with_weekday())
     return JsonResponse(sorted(list(dates)), safe=False)
 
