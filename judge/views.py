@@ -221,7 +221,7 @@ def submission_status_ajax(request, user_pk):
     user = get_object_or_404(User, pk=user_pk)
     submissions = Submission.objects.filter(author=request.user).order_by('-submitted_at')
     for submission in submissions:
-        if 'Check' in submission.status or 'Prepare' in submission.status:
+        if 'Checking' in submission.status or 'Preparing' in submission.status:
             submission.status = get_status(submission.pk)
             submission.save()
     return HttpResponse(get_submission_table(Submission.objects.filter(author=user).order_by('-submitted_at')))
