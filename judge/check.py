@@ -40,7 +40,7 @@ def check(jar, pk, testcase, tc, an, rs):
 
             result = open('{}/{}.txt'.format(rs, pk), 'w')
             print(str((int(index)+1)*100//testcase)+'%')
-            result.write('Check '+str((int(index)+1)*100//testcase)+'%')
+            result.write('Checking '+str((int(index)+1)*100//testcase)+'%')
             result.close()
         result = open('{}/{}.txt'.format(rs, pk), 'w')
         result.write('All Correct')
@@ -48,7 +48,7 @@ def check(jar, pk, testcase, tc, an, rs):
     except Exception as e:
         print(e)
         result = open('{}/{}.txt'.format(rs, pk), 'w')
-        result.write('Error')
+        result.write('Unknown Error')
         result.close()
 
 

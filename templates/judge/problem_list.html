@@ -1,6 +1,7 @@
 {% extends 'judge/base.html' %}
 
 {% block content %}
+    <h3><a href="{% url 'judge:submission_status' %}">My submissions</a></h3>
 	<h2>Problems</h2>
     {% for problem in problems %}
         <div class="problem">

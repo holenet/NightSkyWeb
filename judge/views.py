@@ -10,6 +10,7 @@ import urllib
 from wsgiref.util import FileWrapper
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
@@ -56,7 +57,7 @@ def add_testcase(request, problem_pk):
         form = TestcaseAddForm(request.POST, request.FILES)
         if form.is_valid():
             testcases = form.files.getlist('testcases')
-            problem.testcase += len(testcases)
+            problem.testcase += len(testcases)/2
             problem.save()
             tc = JUDGE_ROOT+'/testcase/{}'.format(problem.pk)
             if not os.path.exists(tc):
@@ -170,7 +171,7 @@ def submit(request, problem_pk):
                     )
             )
 
-            return redirect('judge:submission_status', submission_pk=submission.pk)
+            return redirect('judge:submission_status')
     else:
         form = SubmitForm()
     return render(request, 'judge/submit.html', {'problem': problem, 'form': form})
@@ -183,8 +184,27 @@ def get_status(submission_pk):
         result.close()
     except Exception as e:
         print(e)
-        status = 'Prepare'
+        status = 'Preparing'
     return status
+
+
+def get_submission_table(submissions):
+    result = '<table class="table table-striped">'
+    result += '<tr>'
+    result += '<td>Problem</td>'
+    result += '<td>Submission Id</td>'
+    result += '<td>Status</td>'
+    result += '<td>Submitted</td>'
+    result += '</tr>'
+    for submission in submissions:
+        result += '<tr>'
+        result += '<td><a href=\"/judge/problem/'+str(submission.problem.pk)+'/testcase/list\">'+str(submission.problem)+'</td>'
+        result += '<td>'+str(submission.pk)+'</td>'
+        result += '<td>'+str(submission.status)+'</td>'
+        result += '<td>'+str(submission.submitted_at)+'</td>'
+        result += '</tr>'
+    result += '</table>'
+    return result
 
 
 @login_required
@@ -193,44 +213,15 @@ def submission_status(request):
     for submission in submissions:
         submission.status = get_status(submission.pk)
         submission.save()
-    context = dict(submissions=submissions)
+    context = dict(submissions=submissions, table=get_submission_table(submissions), user=request.user)
     return render(request, 'judge/submission_status.html', context)
 
 
-def submission_status_ajax(request, submission_pk):
-    submission = get_object_or_404(Submission, pk=submission_pk)
-    submission.status = get_status(submission.pk)
-    submission.save()
-    return HttpResponse(submission.status)
-
-
-# @login_required
-# def submission_status(request, submission_pk):
-#     submission = get_object_or_404(Submission, pk=submission_pk, author=request.user)
-#     try:
-#         result = open(JUDGE_ROOT+'/result/{}.txt'.format(submission.pk), 'r')
-#         status = result.readline()
-#         result.close()
-#     except Exception as e:
-#         print(e)
-#         status = 'Prepare'
-#     submission.status = status
-#     print(status)
-#     submission.save()
-#     context = dict(problem_pk=submission.problem.pk, submission=submission)
-#     if 'Wrong' in status or 'Error' in status:
-#         if len(re.findall(r'\((.*):', status))>0:
-#             context['wrong'] = re.findall(r'\((.*):', status)[0]
-#     return render(request, 'judge/submission_status.html', context)
-#
-#
-# def submission_status_ajax(request, submission_pk):
-#     submission = get_object_or_404(Submission, pk=submission_pk)
-#     try:
-#         result = open(JUDGE_ROOT+'/result/{}.txt'.format(submission.pk), 'r')
-#         status = result.readline()
-#         result.close()
-#     except Exception as e:
-#         print(e)
-#         status = 'Prepare'
-#     return HttpResponse(status)
+def submission_status_ajax(request, user_pk):
+    user = get_object_or_404(User, pk=user_pk)
+    submissions = Submission.objects.filter(author=request.user).order_by('-submitted_at')
+    for submission in submissions:
+        if 'Check' in submission.status or 'Prepare' in submission.status:
+            submission.status = get_status(submission.pk)
+            submission.save()
+    return HttpResponse(get_submission_table(Submission.objects.filter(author=user).order_by('-submitted_at')))

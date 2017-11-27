@@ -12,5 +12,5 @@ urlpatterns = [
 
     url(r'^submit/(?P<problem_pk>[0-9]+)/$', views.submit, name='submit'),
     url(r'^submission/status/$', views.submission_status, name='submission_status'),
-    url(r'^submission/status/(?P<submission_pk>[0-9]+)/$', views.submission_status_ajax, name='submission_status_ajax')
+    url(r'^submission/status/(?P<user_pk>[0-9]+)/ajax/$', views.submission_status_ajax, name='submission_status_ajax')
 ]
