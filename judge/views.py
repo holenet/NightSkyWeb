@@ -14,7 +14,7 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
 
-from judge.forms import SubmitForm, ProblemForm
+from judge.forms import SubmitForm, ProblemForm, TestcaseAddForm
 from judge.models import Problem, Submission
 
 JUDGE_ROOT = os.path.join(settings.MEDIA_ROOT, 'Judge')
@@ -47,6 +47,28 @@ def problem_new(request):
     else:
         form = ProblemForm()
     return render(request, 'judge/problem_new.html', {'form': form})
+
+
+@login_required
+def add_testcase(request, problem_pk):
+    problem = get_object_or_404(Problem, pk=problem_pk)
+    if request.method == 'POST':
+        form = TestcaseAddForm(request.POST, request.FILES)
+        if form.is_valid():
+            testcases = form.files.getlist('testcases')
+            problem.testcase += len(testcases)
+            problem.save()
+            tc = JUDGE_ROOT+'/testcase/{}'.format(problem.pk)
+            if not os.path.exists(tc):
+                os.makedirs(tc)
+            for f in testcases:
+                with open('{}/{}'.format(tc, f.name), 'wb+') as dest:
+                    for chunk in f.chunks():
+                        dest.write(chunk)
+            return redirect('judge:problem_list')
+    else:
+        form = TestcaseAddForm()
+    return render(request, 'judge/add_testcase.html', {'problem': problem, 'form': form})
 
 
 @login_required

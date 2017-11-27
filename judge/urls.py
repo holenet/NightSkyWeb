@@ -5,6 +5,7 @@ app_name = 'judge'
 urlpatterns = [
     url(r'^$', views.problem_list, name='problem_list'),
     url(r'^problem/new/$', views.problem_new, name='problem_new'),
+    url(r'^problem/(?P<problem_pk>[0-9]+)/testcase/add$', views.add_testcase, name='add_testcase'),
     url(r'^problem/(?P<problem_pk>[0-9]+)/testcase/list', views.testcase_list, name='testcase_list'),
     url(r'^problem/(?P<problem_pk>[0-9]+)/testcase/(?P<testcase_index>[0-9]+)/$', views.testcase_detail, name='testcase_detail'),
     url(r'^problem/(?P<problem_pk>[0-9]+)/testcase/(?P<file_name>[a-z0-9\\.]+)/$', views.testcase_download, name='testcase_download'),
