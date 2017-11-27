@@ -191,10 +191,10 @@ def get_status(submission_pk):
 def get_submission_table(submissions):
     result = '<table class="table table-striped">'
     result += '<tr>'
-    result += '<td>Problem</td>'
-    result += '<td>Submission Id</td>'
-    result += '<td>Status</td>'
-    result += '<td>Submitted</td>'
+    result += '<td><b>Problem</b></td>'
+    result += '<td><b>Submission Id</b></td>'
+    result += '<td><b>Status</b></td>'
+    result += '<td><b>Submitted</b></td>'
     result += '</tr>'
     for submission in submissions:
         result += '<tr>'
