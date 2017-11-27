@@ -11,6 +11,6 @@ urlpatterns = [
     url(r'^problem/(?P<problem_pk>[0-9]+)/testcase/(?P<file_name>[a-z0-9\\.]+)/$', views.testcase_download, name='testcase_download'),
 
     url(r'^submit/(?P<problem_pk>[0-9]+)/$', views.submit, name='submit'),
-    url(r'^submission/status/(?P<submission_pk>[0-9]+)/$', views.submission_status, name='submission_status'),
-    url(r'^submission/status/(?P<submission_pk>[0-9]+)/ajax/$', views.submission_status_ajax, name='submission_status_ajax')
+    url(r'^submission/status/$', views.submission_status, name='submission_status'),
+    url(r'^submission/status/(?P<submission_pk>[0-9]+)/$', views.submission_status_ajax, name='submission_status_ajax')
 ]

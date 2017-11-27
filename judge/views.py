@@ -176,33 +176,61 @@ def submit(request, problem_pk):
     return render(request, 'judge/submit.html', {'problem': problem, 'form': form})
 
 
-@login_required
-def submission_status(request, submission_pk):
-    submission = get_object_or_404(Submission, pk=submission_pk, author=request.user)
+def get_status(submission_pk):
     try:
-        result = open(JUDGE_ROOT+'/result/{}.txt'.format(submission.pk), 'r')
+        result = open(JUDGE_ROOT+'/result/{}.txt'.format(submission_pk), 'r')
         status = result.readline()
         result.close()
     except Exception as e:
         print(e)
         status = 'Prepare'
-    submission.status = status
-    print(status)
-    submission.save()
-    context = dict(problem_pk=submission.problem.pk, submission=submission)
-    if 'Wrong' in status or 'Error' in status:
-        if len(re.findall(r'\((.*):', status))>0:
-            context['wrong'] = re.findall(r'\((.*):', status)[0]
+    return status
+
+
+@login_required
+def submission_status(request):
+    submissions = Submission.objects.filter(author=request.user).order_by('-submitted_at')
+    for submission in submissions:
+        submission.status = get_status(submission.pk)
+        submission.save()
+    context = dict(submissions=submissions)
     return render(request, 'judge/submission_status.html', context)
 
 
 def submission_status_ajax(request, submission_pk):
     submission = get_object_or_404(Submission, pk=submission_pk)
-    try:
-        result = open(JUDGE_ROOT+'/result/{}.txt'.format(submission.pk), 'r')
-        status = result.readline()
-        result.close()
-    except Exception as e:
-        print(e)
-        status = 'Prepare'
-    return HttpResponse(status)
+    submission.status = get_status(submission.pk)
+    submission.save()
+    return HttpResponse(submission.status)
+
+
+# @login_required
+# def submission_status(request, submission_pk):
+#     submission = get_object_or_404(Submission, pk=submission_pk, author=request.user)
+#     try:
+#         result = open(JUDGE_ROOT+'/result/{}.txt'.format(submission.pk), 'r')
+#         status = result.readline()
+#         result.close()
+#     except Exception as e:
+#         print(e)
+#         status = 'Prepare'
+#     submission.status = status
+#     print(status)
+#     submission.save()
+#     context = dict(problem_pk=submission.problem.pk, submission=submission)
+#     if 'Wrong' in status or 'Error' in status:
+#         if len(re.findall(r'\((.*):', status))>0:
+#             context['wrong'] = re.findall(r'\((.*):', status)[0]
+#     return render(request, 'judge/submission_status.html', context)
+#
+#
+# def submission_status_ajax(request, submission_pk):
+#     submission = get_object_or_404(Submission, pk=submission_pk)
+#     try:
+#         result = open(JUDGE_ROOT+'/result/{}.txt'.format(submission.pk), 'r')
+#         status = result.readline()
+#         result.close()
+#     except Exception as e:
+#         print(e)
+#         status = 'Prepare'
+#     return HttpResponse(status)
