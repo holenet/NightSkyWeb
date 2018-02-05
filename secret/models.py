@@ -58,10 +58,10 @@ class Piece(models.Model):
                 continue
             s = watch.start
             e = watch.end
-            if len(count)<e:
-                count += [0]*(e-len(count))
+            if len(count)<=e:
+                count += [0]*(e-len(count)+1)
             for i in range(s, e+1):
-                count[i-1] += 1
+                count[i] += 1
         return count
 
 
