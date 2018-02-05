@@ -166,7 +166,7 @@ def piece_to_dict(piece):
 @login_required
 def piece_list(request):
     pieces = Piece.objects.filter(author=request.user)
-    pieces = sorted(pieces, key=lambda x: x.started_at() if x.started_at() else timezone.now(), reverse=True)
+    pieces = sorted(pieces, key=lambda x: x.ended_at() if x.ended_at() else timezone.now(), reverse=True)
     data = []
     for piece in pieces:
         data.append(piece_to_dict(piece))
