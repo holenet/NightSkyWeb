@@ -138,8 +138,11 @@ def log_download_image(request, log_pk):
 @login_required
 def log_cut_watch(request, log_pk):
     log = get_object_or_404(Log, pk=log_pk, author=request.user)
+    watch = log.watch
     log.watch = None
     log.save()
+    if watch is not None and watch.logs.count()==0:
+        watch.delete()
     return JsonResponse(log_to_dict(log), safe=False)
 
 
